@@ -1,4 +1,4 @@
-package com.sample.photogalleryapplication.repository
+package com.sample.photogalleryapplication.di
 
 import com.sample.photogalleryapplication.model.RedditResponse
 import com.sample.photogalleryapplication.network.IRedditPhotoRemote

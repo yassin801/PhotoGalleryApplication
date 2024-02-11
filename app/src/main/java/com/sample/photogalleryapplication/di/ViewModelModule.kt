@@ -1,5 +1,6 @@
-package com.sample.photogalleryapplication.repository
+package com.sample.photogalleryapplication.di
 
+import com.sample.photogalleryapplication.repository.PhotoRepository
 import com.sample.photogalleryapplication.viewmodel.PhotoGalleryViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module

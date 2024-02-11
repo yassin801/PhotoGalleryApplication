@@ -21,11 +21,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import coil.compose.rememberAsyncImagePainter
-import com.sample.photogalleryapplication.di.repositoryModule
 import com.sample.photogalleryapplication.model.Photo
 import com.sample.photogalleryapplication.model.UiResult
-import com.sample.photogalleryapplication.repository.networkModule
-import com.sample.photogalleryapplication.repository.viewModelModule
+import com.sample.photogalleryapplication.di.networkModule
+import com.sample.photogalleryapplication.di.viewModelModule
+import com.sample.photogalleryapplication.di.repositoryModule
 import com.sample.photogalleryapplication.viewmodel.PhotoGalleryViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
