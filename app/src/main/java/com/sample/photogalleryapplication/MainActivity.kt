@@ -17,11 +17,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.sample.photogalleryapplication.model.Photo
+import com.sample.photogalleryapplication.model.UiResult
 import com.sample.photogalleryapplication.viewmodel.PhotoGalleryViewModel
 
 class MainActivity : ComponentActivity() {
@@ -55,9 +57,17 @@ fun PhotoGalleryAppPreview() {
 
 @Composable
 fun PhotoGalleryApp() {
-    val viewModel: PhotoGalleryViewModel = viewModel()
 
     var searchText by remember { mutableStateOf("") }
+
+    val viewModel: PhotoGalleryViewModel = viewModel()
+
+    var uiResult by remember { mutableStateOf<UiResult<List<Photo>>?>(null) }
+
+    var photos by remember { mutableStateOf<List<Photo>>(emptyList()) }
+
+    /** LiveData observer configuration. */
+    viewModel.photos.observe(LocalLifecycleOwner.current) { uiResult = it }
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -75,13 +85,44 @@ fun PhotoGalleryApp() {
                 .padding(16.dp)
         )
 
-        // Photo Grid
-        LazyColumn(modifier = Modifier.padding(16.dp)) {
-            items(viewModel.photos.chunked(3)) { rowOfPhotos ->
-                RowOfPhotos(rowOfPhotos = rowOfPhotos, onItemClick = { photo ->
-                    // TODO: Navigate to detail page using the [photo] parameter.
-                })
+        /** Show the adequate element based on the UI Result. */
+        when (val result = uiResult) {
+            is UiResult.Loading -> {
+                // TODO: Show loading
             }
+
+            is UiResult.Success -> {
+                // Show photos
+                photos = result.data
+                ShowPhotoGrid(photos)
+            }
+
+            is UiResult.Empty -> {
+                // TODO: Show a message (or image) indicates that there are no photos to show
+            }
+
+            is UiResult.Error -> {
+                if (result.isNetworkError) {
+                    // TODO: Show a message (or image) indicates that there is no internet
+                } else {
+                    // TODO: Show a message (or image) indicates that there are no photos to show
+                }
+            }
+
+            else -> {
+                // TODO: Show a message (or image) indicates that there are no photos to show
+            }
+        }
+    }
+}
+
+@Composable
+fun ShowPhotoGrid(photosToShow: List<Photo>, gridSize: Int = 3) {
+    LazyColumn(modifier = Modifier.padding(16.dp)) {
+        items(photosToShow.chunked(gridSize)) { rowOfPhotos ->
+            RowOfPhotos(rowOfPhotos = rowOfPhotos, onItemClick = { photo ->
+                // TODO: Navigate to detail page using the [photo] parameter.
+            })
         }
     }
 }
