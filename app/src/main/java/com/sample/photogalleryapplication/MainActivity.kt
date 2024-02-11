@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import com.sample.photogalleryapplication.ui.theme.PhotoGalleryApplicationTheme
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -20,47 +19,69 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import coil.compose.rememberAsyncImagePainter
+import com.sample.photogalleryapplication.di.repositoryModule
 import com.sample.photogalleryapplication.model.Photo
 import com.sample.photogalleryapplication.model.UiResult
+import com.sample.photogalleryapplication.repository.networkModule
+import com.sample.photogalleryapplication.repository.viewModelModule
 import com.sample.photogalleryapplication.viewmodel.PhotoGalleryViewModel
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.core.context.startKoin
+import org.koin.core.logger.Level
 
 class MainActivity : ComponentActivity() {
+
+    private val viewModel: PhotoGalleryViewModel by viewModel()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setupKoin()
         setContent {
             PhotoGalleryApplicationTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    PhotoGalleryApp()
+                    PhotoGalleryApp(viewModel)
                 }
             }
         }
     }
-}
 
-@Preview(showBackground = true)
-@Composable
-fun PhotoGalleryAppPreview() {
-    PhotoGalleryApplicationTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            PhotoGalleryApp()
+    /** Koin configuration. */
+    private fun setupKoin() {
+        startKoin {
+            androidLogger(Level.ERROR)
+            androidContext(this@MainActivity)
+            modules(
+                viewModelModule,
+                repositoryModule,
+                networkModule
+            )
         }
     }
 }
 
+//@Preview(showBackground = true)
+//@Composable
+//fun PhotoGalleryAppPreview() {
+//    PhotoGalleryApplicationTheme {
+//        Surface(
+//            modifier = Modifier.fillMaxSize(),
+//            color = MaterialTheme.colorScheme.background
+//        ) {
+//            PhotoGalleryApp()
+//        }
+//    }
+//}
+
 @Composable
-fun PhotoGalleryApp() {
+fun PhotoGalleryApp(viewModel: PhotoGalleryViewModel) {
 
     var searchText by remember { mutableStateOf("") }
-
-    val viewModel: PhotoGalleryViewModel = viewModel()
 
     var uiResult by remember { mutableStateOf<UiResult<List<Photo>>?>(null) }
 

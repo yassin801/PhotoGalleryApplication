@@ -14,10 +14,7 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 
 /** The [ViewModel] for fetching a list of top [Photo] from a subreddit. */
-class PhotoGalleryViewModel(
-    // TODO: Add DI using Koin.
-    private val repository: PhotoRepository = PhotoRepository()
-) : ViewModel() {
+class PhotoGalleryViewModel(private val repository: PhotoRepository) : ViewModel() {
 
     /** The current text to search. */
     private val keyword = MutableStateFlow("")

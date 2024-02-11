@@ -8,10 +8,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 /** Repository class module for handling [Photo] data operations. */
-class PhotoRepository(
-    // TODO: Add DI using Koin.
-    private val remote: IRedditPhotoRemote = RedditPhotoRemoteImpl()
-) {
+class PhotoRepository(private val remote: IRedditPhotoRemote) {
     fun getPhotos(keyword: String): Flow<UiResult<List<Photo>>> = flow {
         // TODO: Currently simulate network call to Reddit API.
         // TODO: call remote.getPhotos(keyword)
