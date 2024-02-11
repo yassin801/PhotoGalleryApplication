@@ -5,17 +5,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import com.sample.photogalleryapplication.model.Photo
 import com.sample.photogalleryapplication.model.UiResult
+import com.sample.photogalleryapplication.repository.PhotoRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 
 /** The [ViewModel] for fetching a list of top [Photo] from a subreddit. */
-class PhotoGalleryViewModel : ViewModel() {
+class PhotoGalleryViewModel(
+    // TODO: Add DI using Koin.
+    private val repository: PhotoRepository = PhotoRepository()
+) : ViewModel() {
 
     /** The current text to search. */
     private val keyword = MutableStateFlow("")
@@ -30,26 +32,13 @@ class PhotoGalleryViewModel : ViewModel() {
         }
         // When a new text is set then trigger a network call.
         .flatMapLatest { text ->
-            fetchDataFromReddit(text)
+            repository.getPhotos(text)
         }
         // Create a LiveData from Flow.
         .asLiveData()
 
     fun searchPhotos(keywordToSearch: String) {
         keyword.value = keywordToSearch
-    }
-
-    // TODO: Create a repository class and move this function there, for now return a hardcoded list.
-    private fun fetchDataFromReddit(keyword: String): Flow<UiResult<List<Photo>>> = flow {
-        // TODO: Simulate network call to Reddit API.
-        val placeholderPhotos = listOf(
-            Photo("https://via.placeholder.com/150", "Photo 1"),
-            Photo("https://via.placeholder.com/150", "Photo 2"),
-            Photo("https://via.placeholder.com/150", "Photo 3"),
-            Photo("https://via.placeholder.com/150", "Photo 4"),
-            Photo("https://via.placeholder.com/150", "Photo 5")
-        )
-        emit(UiResult.successOrEmpty(placeholderPhotos))
     }
 
     private companion object {
