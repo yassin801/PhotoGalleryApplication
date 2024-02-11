@@ -1,4 +1,4 @@
-package com.sample.photogalleryapplication.ui.theme
+package com.sample.photogalleryapplication.view.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

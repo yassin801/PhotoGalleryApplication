@@ -1,4 +1,4 @@
-package com.sample.photogalleryapplication
+package com.sample.photogalleryapplication.view
 
 import android.os.Bundle
 import androidx.compose.runtime.*
@@ -8,25 +8,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.sample.photogalleryapplication.ui.theme.PhotoGalleryApplicationTheme
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.lazy.*
-import androidx.compose.foundation.shape.RoundedCornerShape
+import com.sample.photogalleryapplication.view.theme.PhotoGalleryApplicationTheme
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import coil.compose.rememberAsyncImagePainter
 import com.sample.photogalleryapplication.model.Photo
 import com.sample.photogalleryapplication.model.UiResult
 import com.sample.photogalleryapplication.di.networkModule
@@ -128,7 +116,9 @@ fun PhotoGalleryApp(viewModel: PhotoGalleryViewModel) {
             is UiResult.Success -> {
                 photos = result.data
                 if (photos.isNotEmpty())
-                    ShowPhotoGrid(photos)
+                    ShowPhotoGrid(photos) {
+                        // TODO: Add logic to navigate to details page here.
+                    }
                 else
                     ShowEmptyResponse()
             }
@@ -145,93 +135,5 @@ fun PhotoGalleryApp(viewModel: PhotoGalleryViewModel) {
                 ShowEmptyResponse()
             }
         }
-    }
-}
-
-@Composable
-fun ShowPhotoGrid(photosToShow: List<Photo>) {
-    LazyColumn(modifier = Modifier.padding(vertical = 16.dp, horizontal = 16.dp)) {
-        items(photosToShow.chunked(3)) { rowOfPhotos ->
-            RowOfPhotos(rowOfPhotos = rowOfPhotos, onItemClick = { photo ->
-                // TODO: Navigate to detail page using the [photo] parameter.
-            })
-        }
-    }
-}
-
-@Composable
-fun RowOfPhotos(rowOfPhotos: List<Photo>, onItemClick: (Photo) -> Unit) {
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-        rowOfPhotos.forEach { photo ->
-            PhotoItem(photo = photo, onItemClick = onItemClick)
-        }
-    }
-}
-
-@Composable
-fun PhotoItem(photo: Photo, onItemClick: (Photo) -> Unit) {
-    Card(
-        modifier = Modifier
-            .padding(4.dp)
-            .clickable { onItemClick(photo) },
-        shape = RoundedCornerShape(8.dp)
-    ) {
-        Box(modifier = Modifier.aspectRatio(1.5f)) {
-            Image(
-                painter = rememberAsyncImagePainter(photo.imageUrl),
-                contentDescription = "Photo: ${photo.title}",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
-            )
-
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    // Semi-transparent background to make the text visible
-                    .background(color = Color.Black.copy(alpha = 0.5f))
-                    .padding(8.dp),
-                verticalArrangement = Arrangement.Bottom
-            ) {
-                Text(
-                    text = photo.title,
-                    style = TextStyle(color = Color.White, fontWeight = FontWeight.Bold),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun ShowProgressBar() {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        CircularProgressIndicator()
-    }
-}
-
-@Composable
-fun ShowEmptyResponse() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = "No photos to show!",
-            color = MaterialTheme.colorScheme.primary
-        )
-    }
-}
-
-@Composable
-fun ShowErrorResponse() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = "No internet connection!",
-            color = MaterialTheme.colorScheme.error
-        )
     }
 }

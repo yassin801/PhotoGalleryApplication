@@ -1,4 +1,4 @@
-package com.sample.photogalleryapplication.ui.theme
+package com.sample.photogalleryapplication.view.theme
 
 import android.app.Activity
 import android.os.Build
