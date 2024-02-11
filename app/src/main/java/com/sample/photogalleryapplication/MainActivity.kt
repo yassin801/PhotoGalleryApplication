@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -43,7 +44,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setupKoin()
+        startKoinIfNeeded()
         setContent {
             PhotoGalleryApplicationTheme {
                 Surface(
@@ -57,16 +58,23 @@ class MainActivity : ComponentActivity() {
     }
 
     /** Koin configuration. */
-    private fun setupKoin() {
-        startKoin {
-            androidLogger(Level.ERROR)
-            androidContext(this@MainActivity)
-            modules(
-                viewModelModule,
-                repositoryModule,
-                networkModule
-            )
-        }
+    private fun startKoinIfNeeded() {
+        if (!koinStarted)
+            startKoin {
+                androidLogger(Level.ERROR)
+                androidContext(this@MainActivity)
+                modules(
+                    viewModelModule,
+                    repositoryModule,
+                    networkModule
+                )
+            }.also {
+                koinStarted = true
+            }
+    }
+
+    companion object {
+        private var koinStarted = false
     }
 }
 
@@ -86,11 +94,11 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun PhotoGalleryApp(viewModel: PhotoGalleryViewModel) {
 
-    var searchText by remember { mutableStateOf("") }
-
     var uiResult by remember { mutableStateOf<UiResult<List<Photo>>?>(null) }
 
-    var photos by remember { mutableStateOf<List<Photo>>(emptyList()) }
+    var searchText by rememberSaveable { mutableStateOf("") }
+
+    var photos by rememberSaveable { mutableStateOf<List<Photo>>(emptyList()) }
 
     /** LiveData observer configuration. */
     viewModel.photos.observe(LocalLifecycleOwner.current) { uiResult = it }
@@ -119,27 +127,27 @@ fun PhotoGalleryApp(viewModel: PhotoGalleryViewModel) {
 
             is UiResult.Success -> {
                 photos = result.data
-                ShowPhotoGrid(photos)
-            }
-
-            is UiResult.Empty -> {
-                // TODO: Show a message (or image) indicates that there are no photos to show
+                if (photos.isNotEmpty())
+                    ShowPhotoGrid(photos)
+                else
+                    ShowEmptyResponse()
             }
 
             is UiResult.Error -> {
                 if (result.isNetworkError) {
-                    // TODO: Show a message (or image) indicates that there is no internet
+                    ShowErrorResponse()
                 } else {
-                    // TODO: Show a message (or image) indicates that there are no photos to show
+                    ShowEmptyResponse()
                 }
             }
 
             else -> {
-                // TODO: Show a message (or image) indicates that there are no photos to show
+                ShowEmptyResponse()
             }
         }
     }
 }
+
 @Composable
 fun ShowPhotoGrid(photosToShow: List<Photo>) {
     LazyColumn(modifier = Modifier.padding(vertical = 16.dp, horizontal = 16.dp)) {
@@ -199,5 +207,31 @@ fun PhotoItem(photo: Photo, onItemClick: (Photo) -> Unit) {
 fun ShowProgressBar() {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         CircularProgressIndicator()
+    }
+}
+
+@Composable
+fun ShowEmptyResponse() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = "No photos to show!",
+            color = MaterialTheme.colorScheme.primary
+        )
+    }
+}
+
+@Composable
+fun ShowErrorResponse() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = "No internet connection!",
+            color = MaterialTheme.colorScheme.error
+        )
     }
 }
