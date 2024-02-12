@@ -1,5 +1,6 @@
 package com.sample.photogalleryapplication.di
 
+import com.sample.photogalleryapplication.BuildConfig
 import com.sample.photogalleryapplication.network.IRedditPhotoRemote
 import com.sample.photogalleryapplication.network.IRedditPhotoService
 import com.sample.photogalleryapplication.network.RedditPhotoRemoteImpl
@@ -21,12 +22,11 @@ private const val BASE_URL = "https://www.reddit.com/"
 
 private fun provideLoggingInterceptor(): HttpLoggingInterceptor {
     return HttpLoggingInterceptor().apply {
-        // TODO: Fix BuildConfig import
-//        level = if (BuildConfig.DEBUG) {
-//            HttpLoggingInterceptor.Level.BODY
-//        } else {
-//            HttpLoggingInterceptor.Level.NONE
-//        }
+        level = if (BuildConfig.DEBUG) {
+            HttpLoggingInterceptor.Level.BODY
+        } else {
+            HttpLoggingInterceptor.Level.NONE
+        }
     }
 }
 
