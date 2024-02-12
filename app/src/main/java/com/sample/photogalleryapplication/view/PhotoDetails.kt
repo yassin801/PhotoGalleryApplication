@@ -35,8 +35,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
+import com.sample.photogalleryapplication.R
 import com.sample.photogalleryapplication.model.Photo
 import com.sample.photogalleryapplication.view.theme.PhotoGalleryApplicationTheme
+import com.sample.photogalleryapplication.view.util.getStringResource
 
 @Composable
 fun DetailPage(navController: NavController, photo: Photo?) {
@@ -75,12 +77,18 @@ fun DetailPage(navController: NavController, photo: Photo?) {
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                DetailRow(label = "Subreddit: ", value = "r/${it.subreddit}")
-                DetailRow(label = "Number of Up-votes: ", value = it.upVotes)
+                DetailRow(
+                    label = getStringResource(R.string.subreddit_label),
+                    value = "r/${it.subreddit}"
+                )
+                DetailRow(
+                    label = getStringResource(R.string.up_votes_label),
+                    value = it.upVotes
+                )
             }
         } ?: run {
             Text(
-                text = "No photo available",
+                text = getStringResource(R.string.details_error),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.error
             )
@@ -130,7 +138,7 @@ fun BackButton(navController: NavController) {
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(
-                text = "Go back",
+                text = getStringResource(R.string.back_btn),
                 style = MaterialTheme.typography.bodyMedium
             )
         }

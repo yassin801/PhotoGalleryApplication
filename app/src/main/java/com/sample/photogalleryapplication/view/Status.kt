@@ -8,6 +8,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.sample.photogalleryapplication.R
+import com.sample.photogalleryapplication.view.util.getStringResource
 
 @Composable
 fun ShowProgressBar() {
@@ -23,7 +25,7 @@ fun ShowEmptyResponse() {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "No photos to show!",
+            text = getStringResource(R.string.no_result),
             color = MaterialTheme.colorScheme.primary
         )
     }
@@ -36,7 +38,7 @@ fun ShowErrorResponse() {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "No internet connection!",
+            text = getStringResource(R.string.network_error_result),
             color = MaterialTheme.colorScheme.error
         )
     }

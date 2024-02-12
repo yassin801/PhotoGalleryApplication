@@ -38,8 +38,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
+import com.sample.photogalleryapplication.R
 import com.sample.photogalleryapplication.model.Photo
 import com.sample.photogalleryapplication.model.UiResult
+import com.sample.photogalleryapplication.view.util.getStringResource
 import com.sample.photogalleryapplication.viewmodel.PhotoGalleryViewModel
 
 @Composable
@@ -102,7 +104,10 @@ fun SearchBox(
                     tint = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.size(18.dp)
                 )
-                Text("Search", color = MaterialTheme.colorScheme.onSurface)
+                Text(
+                    text = getStringResource(R.string.search_place_holder),
+                    color = MaterialTheme.colorScheme.onSurface
+                )
             }
         },
         singleLine = true,
