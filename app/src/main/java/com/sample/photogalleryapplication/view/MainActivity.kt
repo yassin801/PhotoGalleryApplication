@@ -36,7 +36,19 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
 
-            NavHost(navController, startDestination = ROUTE_PHOTO_GALLERY_PAGE) {
+            NavHost(navController, startDestination = ROUTE_SPLASH_SCREEN) {
+                composable(ROUTE_SPLASH_SCREEN) {
+                    PhotoGalleryApplicationTheme {
+                        Surface(
+                            modifier = Modifier.fillMaxSize(),
+                            color = MaterialTheme.colorScheme.background
+                        ) {
+                            SplashScreen {
+                                navController.navigate(ROUTE_PHOTO_GALLERY_PAGE)
+                            }
+                        }
+                    }
+                }
                 composable(ROUTE_PHOTO_GALLERY_PAGE) {
                     PhotoGalleryApplicationTheme {
                         Surface(
@@ -93,6 +105,7 @@ class MainActivity : ComponentActivity() {
 
     private companion object {
         var koinStarted = false
+        const val ROUTE_SPLASH_SCREEN = "SplashScreen"
         const val ROUTE_PHOTO_GALLERY_PAGE = "PhotoGalleryPage"
         const val ROUTE_PHOTO_DETAIL_PAGE = "photoDetailPage"
         const val PHOTO_JSON = "photoJson"
