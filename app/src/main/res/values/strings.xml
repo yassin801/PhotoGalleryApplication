@@ -3,8 +3,9 @@
     <string name="search_place_holder">Search</string>
     <string name="no_result">No photos to show!</string>
     <string name="network_error_result">No internet connection!</string>
-    <string name="subreddit_label">Subreddit: </string>
-    <string name="up_votes_label">Number of Up-votes: </string>
+    <string name="subreddit_label">Subreddit:</string>
+    <string name="up_votes_label">Number of Up-votes:</string>
     <string name="details_error">Error when showing photo details!</string>
     <string name="back_btn">Go back</string>
+    <string name="loading_label">Loading …</string>
 </resources>
