@@ -48,42 +48,63 @@ import com.sample.photogalleryapplication.viewmodel.PhotoGalleryViewModel
 fun ShowPhotoGalleryPage(viewModel: PhotoGalleryViewModel, onItemClick: (Photo) -> Unit) {
 
     var uiResult by remember { mutableStateOf<UiResult<List<Photo>>?>(null) }
-
     var searchText by rememberSaveable { mutableStateOf("") }
 
-    var photos by rememberSaveable { mutableStateOf<List<Photo>>(emptyList()) }
-
-    /** LiveData observer configuration. */
+    // LiveData observer configuration
     viewModel.photos.observe(LocalLifecycleOwner.current) { uiResult = it }
 
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
+    Column(modifier = Modifier.fillMaxSize()) {
         SearchBox(searchText) { newText ->
             searchText = newText
             viewModel.searchPhotos(newText)
         }
 
-        /** Show the adequate element based on the UI Result. */
-        when (val result = uiResult) {
-            is UiResult.Loading -> ShowProgressBar()
+        ShowUiBasedOnResult(uiResult, onItemClick)
+    }
+}
 
-            is UiResult.Success -> {
-                photos = result.data
-                if (photos.isNotEmpty())
-                    ShowPhotoGrid(photos, onItemClick)
-                else
-                    ShowEmptyResponse()
-            }
+@Composable
+fun ShowUiBasedOnResult(uiResult: UiResult<List<Photo>>?, onItemClick: (Photo) -> Unit) {
+    when (uiResult) {
+        is UiResult.Loading -> ShowProgressBar()
+        is UiResult.Success -> ShowSuccessUi(uiResult.data, onItemClick)
+        is UiResult.Error -> ShowErrorUi(uiResult.isNetworkError)
+        else -> ShowEmptyResponse()
+    }
+}
 
-            is UiResult.Error -> {
-                if (result.isNetworkError)
-                    ShowErrorResponse()
-                else
-                    ShowEmptyResponse()
-            }
+@Composable
+fun ShowErrorUi(networkError: Boolean) {
+    if (networkError) {
+        ShowErrorResponse()
+    } else {
+        ShowEmptyResponse()
+    }
+}
 
-            else -> ShowEmptyResponse()
+@Composable
+fun ShowSuccessUi(photosToShow: List<Photo>, onItemClick: (Photo) -> Unit) {
+    if (photosToShow.isNotEmpty()) {
+        ShowPhotoGrid(photosToShow, onItemClick)
+    } else {
+        ShowEmptyResponse()
+    }
+}
+
+@Composable
+fun ShowPhotoGrid(photosToShow: List<Photo>, onItemClick: (Photo) -> Unit) {
+    LazyColumn(modifier = Modifier.padding(vertical = 16.dp, horizontal = 16.dp)) {
+        items(photosToShow.chunked(3)) { rowOfPhotos ->
+            RowOfPhotos(rowOfPhotos = rowOfPhotos, onItemClick = onItemClick)
+        }
+    }
+}
+
+@Composable
+fun RowOfPhotos(rowOfPhotos: List<Photo>, onItemClick: (Photo) -> Unit) {
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+        rowOfPhotos.forEach { photo ->
+            PhotoItem(photo = photo, onItemClick = onItemClick)
         }
     }
 }
@@ -115,24 +136,6 @@ fun SearchBox(
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
     )
-}
-
-@Composable
-fun ShowPhotoGrid(photosToShow: List<Photo>, onItemClick: (Photo) -> Unit) {
-    LazyColumn(modifier = Modifier.padding(vertical = 16.dp, horizontal = 16.dp)) {
-        items(photosToShow.chunked(3)) { rowOfPhotos ->
-            RowOfPhotos(rowOfPhotos = rowOfPhotos, onItemClick = onItemClick)
-        }
-    }
-}
-
-@Composable
-fun RowOfPhotos(rowOfPhotos: List<Photo>, onItemClick: (Photo) -> Unit) {
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-        rowOfPhotos.forEach { photo ->
-            PhotoItem(photo = photo, onItemClick = onItemClick)
-        }
-    }
 }
 
 @Composable
