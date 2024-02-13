@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavBackStackEntry
@@ -38,36 +39,13 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
 
-            NavHost(navController, startDestination = ROUTE_PHOTO_GALLERY_PAGE) {
-                composable(ROUTE_PHOTO_GALLERY_PAGE) {
-                    PhotoGalleryApplicationTheme {
-                        Surface(
-                            modifier = Modifier.fillMaxSize(),
-                            color = MaterialTheme.colorScheme.background
-                        ) {
-                            ShowPhotoGalleryPage(viewModel) { photo ->
-                                navigateToDetailPage(navController, photo)
-                            }
-                        }
-                    }
-                }
-                composable("$ROUTE_PHOTO_DETAIL_PAGE/{$PHOTO_JSON}") { backStackEntry ->
-                    PhotoGalleryApplicationTheme {
-                        Surface(
-                            modifier = Modifier.fillMaxSize(),
-                            color = MaterialTheme.colorScheme.background
-                        ) {
-                            DetailPage(navController, backStackEntry.parsePhoto())
-                        }
-                    }
-                }
-            }
+            SetupNavigation(navController)
         }
     }
 
     /** Koin configuration. */
     private fun startKoinIfNeeded() {
-        if (!koinStarted)
+        if (!isKoinStarted)
             startKoin {
                 androidLogger(Level.ERROR)
                 androidContext(this@MainActivity)
@@ -77,13 +55,41 @@ class MainActivity : ComponentActivity() {
                     networkModule
                 )
             }.also {
-                koinStarted = true
+                isKoinStarted = true
             }
     }
 
     /** Function to navigate to the detail screen with Photo object. */
     private fun navigateToDetailPage(navController: NavHostController, photo: Photo) {
         navController.navigate("$ROUTE_PHOTO_DETAIL_PAGE/${Uri.encode(gson.toJson(photo))}")
+    }
+
+    @Composable
+    private fun SetupNavigation(navController: NavHostController) {
+        NavHost(navController, startDestination = ROUTE_PHOTO_GALLERY_PAGE) {
+            composable(ROUTE_PHOTO_GALLERY_PAGE) {
+                PhotoGalleryApplicationTheme {
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colorScheme.background
+                    ) {
+                        ShowPhotoGalleryPage(viewModel) { photo ->
+                            navigateToDetailPage(navController, photo)
+                        }
+                    }
+                }
+            }
+            composable("$ROUTE_PHOTO_DETAIL_PAGE/{$PHOTO_JSON}") { backStackEntry ->
+                PhotoGalleryApplicationTheme {
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colorScheme.background
+                    ) {
+                        DetailPage(navController, backStackEntry.parsePhoto())
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -94,7 +100,7 @@ class MainActivity : ComponentActivity() {
         gson.fromJson(arguments?.getString(PHOTO_JSON), Photo::class.java)
 
     private companion object {
-        var koinStarted = false
+        var isKoinStarted = false
         const val ROUTE_PHOTO_GALLERY_PAGE = "PhotoGalleryPage"
         const val ROUTE_PHOTO_DETAIL_PAGE = "photoDetailPage"
         const val PHOTO_JSON = "photoJson"
