@@ -71,12 +71,14 @@ dependencies {
     val activityCompose = "androidx.activity:activity-compose:1.8.2"
     val navigationCompose = "androidx.navigation:navigation-compose:2.7.7"
     val composeBom = "androidx.compose:compose-bom:2023.08.00"
+    val splashScreen = "androidx.core:core-splashscreen:1.0.1"
 
     implementation(coreKtx)
     implementation(lifecycleRuntimeKtx)
     implementation(lifecycleViewModelCompose)
     implementation(lifecycleLiveDataKtx)
     implementation(activityCompose)
+    implementation(splashScreen)
     implementation(platform(composeBom))
 
     // Compose

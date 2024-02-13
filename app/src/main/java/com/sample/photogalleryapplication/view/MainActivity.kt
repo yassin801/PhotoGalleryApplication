@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.ui.Modifier
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -33,22 +34,11 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         startKoinIfNeeded()
+        installSplashScreen()
         setContent {
             val navController = rememberNavController()
 
-            NavHost(navController, startDestination = ROUTE_SPLASH_SCREEN) {
-                composable(ROUTE_SPLASH_SCREEN) {
-                    PhotoGalleryApplicationTheme {
-                        Surface(
-                            modifier = Modifier.fillMaxSize(),
-                            color = MaterialTheme.colorScheme.background
-                        ) {
-                            SplashScreen {
-                                navController.navigate(ROUTE_PHOTO_GALLERY_PAGE)
-                            }
-                        }
-                    }
-                }
+            NavHost(navController, startDestination = ROUTE_PHOTO_GALLERY_PAGE) {
                 composable(ROUTE_PHOTO_GALLERY_PAGE) {
                     PhotoGalleryApplicationTheme {
                         Surface(
