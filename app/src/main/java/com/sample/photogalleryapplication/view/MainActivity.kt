@@ -95,7 +95,6 @@ class MainActivity : ComponentActivity() {
 
     private companion object {
         var koinStarted = false
-        const val ROUTE_SPLASH_SCREEN = "SplashScreen"
         const val ROUTE_PHOTO_GALLERY_PAGE = "PhotoGalleryPage"
         const val ROUTE_PHOTO_DETAIL_PAGE = "photoDetailPage"
         const val PHOTO_JSON = "photoJson"
