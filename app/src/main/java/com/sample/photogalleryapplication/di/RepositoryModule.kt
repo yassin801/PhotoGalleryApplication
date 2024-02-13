@@ -8,5 +8,4 @@ val repositoryModule = module {
     single { provideRedditPhotoRepository(get()) }
 }
 
-private fun provideRedditPhotoRepository(remote: IRedditPhotoRemote): PhotoRepository =
-    PhotoRepository(remote)
+private fun provideRedditPhotoRepository(remote: IRedditPhotoRemote): PhotoRepository = PhotoRepository(remote)

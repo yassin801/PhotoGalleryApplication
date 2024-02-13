@@ -9,6 +9,4 @@ val viewModelModule = module {
     viewModel { providePhotoGalleryViewModel(get()) }
 }
 
-private fun providePhotoGalleryViewModel(repository: PhotoRepository): PhotoGalleryViewModel {
-    return PhotoGalleryViewModel(repository)
-}
+private fun providePhotoGalleryViewModel(repository: PhotoRepository) = PhotoGalleryViewModel(repository)

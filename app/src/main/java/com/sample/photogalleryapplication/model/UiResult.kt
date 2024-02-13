@@ -4,6 +4,7 @@ import java.io.IOException
 
 /** Result management for UI and data. */
 sealed class UiResult<out T> {
+
     data class Success<T>(val data: T) : UiResult<T>()
 
     data class Error(val exception: Throwable) : UiResult<Nothing>() {
@@ -30,8 +31,6 @@ sealed class UiResult<out T> {
         fun loading() = Loading
 
         /** Return [Empty] if [list] is empty, otherwise return [Success]. */
-        fun <T> successOrEmpty(list: List<T>): UiResult<List<T>> {
-            return if (list.isEmpty()) Empty else Success(list)
-        }
+        fun <T> successOrEmpty(list: List<T>): UiResult<List<T>> = if (list.isEmpty()) empty() else success(list)
     }
 }
