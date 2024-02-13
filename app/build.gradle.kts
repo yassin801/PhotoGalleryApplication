@@ -108,6 +108,11 @@ dependencies {
 
     // Test
     testImplementation("junit:junit:$junitVersion")
+    testImplementation("androidx.arch.core:core-testing:2.2.0")
+    testImplementation("org.mockito:mockito-core:3.12.4")
+    testImplementation("org.mockito:mockito-inline:3.12.4")
+    testImplementation("io.mockk:mockk:1.12.0")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:$espressoVersion")
     androidTestImplementation(platform(composeBom))
