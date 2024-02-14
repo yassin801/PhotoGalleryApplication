@@ -15,12 +15,15 @@ Upon clicking a photo, users are presented with detailed information sourced fro
 
 ### Coil (version 2.5.0)
 Coil is used for loading and displaying images in the application. It offers easy integration and efficient image loading capabilities, ensuring a smooth and responsive user experience.
+- [GitHub Repository](https://github.com/coil-kt/coil)
 
 ### Koin (version 3.5.3)
 Koin is used for dependency injection in the application. It simplifies the management of dependencies and promotes modularization, making it easier to maintain and scale the application.
+- [GitHub Repository](https://github.com/InsertKoinIO/koin)
 
 ### Retrofit (version 2.9.0)
 Retrofit is used for making network requests and handling API communication in the application. It provides a type-safe HTTP client for Android, allowing seamless integration with Reddit's API.
+- [GitHub Repository](https://github.com/square/retrofit)
 
 ## Project Setup
 
