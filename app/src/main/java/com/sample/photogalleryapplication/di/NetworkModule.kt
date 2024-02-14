@@ -20,30 +20,52 @@ val networkModule = module {
 
 private const val BASE_URL = "https://www.reddit.com/"
 
-private fun provideLoggingInterceptor(): HttpLoggingInterceptor {
-    return HttpLoggingInterceptor().apply {
+/**
+ * Provides a [HttpLoggingInterceptor] for logging HTTP requests and responses.
+ * @return A configured [HttpLoggingInterceptor] instance.
+ */
+private fun provideLoggingInterceptor(): HttpLoggingInterceptor =
+    HttpLoggingInterceptor().apply {
         level = if (BuildConfig.DEBUG) {
             HttpLoggingInterceptor.Level.BODY
         } else {
             HttpLoggingInterceptor.Level.NONE
         }
     }
-}
 
+/**
+ * Provides an [OkHttpClient] instance with configured interceptors.
+ * @param loggingInterceptor The logging interceptor.
+ * @return A configured [OkHttpClient] instance.
+ */
 private fun provideOkHttpClient(loggingInterceptor: HttpLoggingInterceptor): OkHttpClient =
     OkHttpClient.Builder()
         .addInterceptor(loggingInterceptor)
         .build()
 
+/**
+ * Provides a [Retrofit] instance for making HTTP requests.
+ * @param okHttpClient The OkHttpClient instance.
+ * @return A configured [Retrofit] instance.
+ */
 private fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit = Retrofit.Builder()
     .baseUrl(BASE_URL)
     .client(okHttpClient)
     .addConverterFactory(GsonConverterFactory.create())
     .build()
 
+/**
+ * Provides an instance of [IRedditPhotoService] for accessing Reddit photo APIs.
+ * @param retrofit The Retrofit instance.
+ * @return An instance of [IRedditPhotoService].
+ */
 private fun provideRedditService(retrofit: Retrofit): IRedditPhotoService =
     retrofit.create(IRedditPhotoService::class.java)
 
-private fun provideRedditImageRemoteImpl(
-    service: IRedditPhotoService
-): RedditPhotoRemoteImpl = RedditPhotoRemoteImpl(service)
+/**
+ * Provides an implementation of [IRedditPhotoRemote] using [IRedditPhotoService].
+ * @param service The Reddit photo service.
+ * @return An instance of [RedditPhotoRemoteImpl].
+ */
+private fun provideRedditImageRemoteImpl(service: IRedditPhotoService): RedditPhotoRemoteImpl =
+    RedditPhotoRemoteImpl(service)

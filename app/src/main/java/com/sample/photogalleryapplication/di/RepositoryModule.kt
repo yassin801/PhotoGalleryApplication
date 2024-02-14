@@ -8,4 +8,10 @@ val repositoryModule = module {
     single { provideRedditPhotoRepository(get()) }
 }
 
-private fun provideRedditPhotoRepository(remote: IRedditPhotoRemote): PhotoRepository = PhotoRepository(remote)
+/**
+ * Provides an instance of [PhotoRepository] using the provided [IRedditPhotoRemote].
+ * @param remote The Reddit photo remote data source.
+ * @return An instance of [PhotoRepository].
+ */
+private fun provideRedditPhotoRepository(remote: IRedditPhotoRemote): PhotoRepository =
+    PhotoRepository(remote)

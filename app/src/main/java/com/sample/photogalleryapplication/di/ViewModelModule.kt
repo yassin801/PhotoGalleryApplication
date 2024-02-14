@@ -9,4 +9,10 @@ val viewModelModule = module {
     viewModel { providePhotoGalleryViewModel(get()) }
 }
 
-private fun providePhotoGalleryViewModel(repository: PhotoRepository) = PhotoGalleryViewModel(repository)
+/**
+ * Provides an instance of [PhotoGalleryViewModel] using the provided [PhotoRepository].
+ * @param repository The repository for accessing photo data.
+ * @return An instance of [PhotoGalleryViewModel].
+ */
+private fun providePhotoGalleryViewModel(repository: PhotoRepository) =
+    PhotoGalleryViewModel(repository)

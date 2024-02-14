@@ -13,32 +13,45 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 
-/** The [ViewModel] for fetching a list of top [Photo] from a subreddit. */
+/**
+ * ViewModel responsible for fetching a list of [Photo] from a subreddit.
+ *
+ * @param repository The repository for fetching photo data.
+ */
 class PhotoGalleryViewModel(private val repository: PhotoRepository) : ViewModel() {
 
-    /** The current text to search. */
+    /** The current keyword used for searching photos. */
     private val keyword = MutableStateFlow("")
 
+    /** LiveData representing the result of fetching photos. */
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     val photos: LiveData<UiResult<List<Photo>>> = keyword
-        // Discard texts typed in a very short time to avoid many network calls.
+        // Discard texts typed in a very short time to avoid excessive network calls.
         .debounce(DEBOUNCE_MILLIS)
-        // Filter out empty text to avoid unnecessary network call.
+        // Filter out empty text to avoid unnecessary network calls.
         .filter { text ->
             text.isNotEmpty()
         }
-        // When a new text is set then trigger a network call.
+        // Trigger a network call when a new keyword is set.
         .flatMapLatest { text ->
             repository.getPhotos(text)
         }
-        // Create a LiveData from Flow.
+        // Convert Flow to LiveData.
         .asLiveData()
 
+    /**
+     * Sets the keyword to search for photos.
+     * @param keywordToSearch The keyword to search for photos.
+     */
     fun searchPhotos(keywordToSearch: String) {
         keyword.value = keywordToSearch
     }
 
     private companion object {
+        /**
+         * The debounce duration in milliseconds.
+         * Used to avoid excessive network calls when typing text.
+         */
         const val DEBOUNCE_MILLIS = 700L
     }
 }

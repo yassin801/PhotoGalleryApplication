@@ -8,10 +8,19 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 
-/** Repository class module for handling [Photo] data operations. */
+/**
+ * Repository class responsible for handling operations related to [Photo] data.
+ *
+ * @param remote The remote data source for fetching photos.
+ */
 class PhotoRepository(private val remote: IRedditPhotoRemote) {
 
-    /** Call remote API and fetch a list of [Photo]. */
+    /**
+     * Calls the remote API to fetch a list of photos based on the provided keyword.
+     *
+     * @param keyword The keyword to search for photos.
+     * @return A Flow emitting [UiResult] objects representing the status of the operation.
+     */
     fun getPhotos(keyword: String): Flow<UiResult<List<Photo>>> = flow {
         emit(UiResult.loading())
         emit(UiResult.successOrEmpty(remote.getPhotos(keyword)))

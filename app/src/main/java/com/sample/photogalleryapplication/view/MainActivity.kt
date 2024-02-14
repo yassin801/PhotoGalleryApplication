@@ -43,9 +43,11 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    /** Koin configuration. */
+    /**
+     * Checks if Koin is already started, and starts it if needed.
+     */
     private fun startKoinIfNeeded() {
-        if (!isKoinStarted)
+        if (!isKoinStarted) {
             startKoin {
                 androidLogger(Level.ERROR)
                 androidContext(this@MainActivity)
@@ -57,13 +59,24 @@ class MainActivity : ComponentActivity() {
             }.also {
                 isKoinStarted = true
             }
+        }
     }
 
-    /** Function to navigate to the detail screen with Photo object. */
+    /**
+     * Navigates to the detail screen with the specified photo.
+     *
+     * @param navController The NavController for navigating between destinations.
+     * @param photo The photo object to pass to the detail screen.
+     */
     private fun navigateToDetailPage(navController: NavHostController, photo: Photo) {
         navController.navigate("$ROUTE_PHOTO_DETAIL_PAGE/${Uri.encode(gson.toJson(photo))}")
     }
 
+    /**
+     * Sets up the navigation graph.
+     *
+     * @param navController The NavController for navigating between destinations.
+     */
     @Composable
     private fun SetupNavigation(navController: NavHostController) {
         NavHost(navController, startDestination = ROUTE_PHOTO_GALLERY_PAGE) {
@@ -94,15 +107,23 @@ class MainActivity : ComponentActivity() {
 
     /**
      * Parses the [Photo] object from the arguments of the [NavBackStackEntry].
+     *
      * @return The parsed [Photo] object, or null if parsing fails.
      */
     private fun NavBackStackEntry.parsePhoto() =
         gson.fromJson(arguments?.getString(PHOTO_JSON), Photo::class.java)
 
     private companion object {
+        /** Flag indicating whether Koin has been started. */
         var isKoinStarted = false
+
+        /** Key for the photo gallery page route. */
         const val ROUTE_PHOTO_GALLERY_PAGE = "PhotoGalleryPage"
+
+        /** Key for the photo detail page route. */
         const val ROUTE_PHOTO_DETAIL_PAGE = "photoDetailPage"
+
+        /** Key for passing photo JSON data between destinations. */
         const val PHOTO_JSON = "photoJson"
     }
 }
